@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/probe.js": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "rewrites": [
     { "source": "/api/probe", "destination": "/api/probe.js" }
   ]
