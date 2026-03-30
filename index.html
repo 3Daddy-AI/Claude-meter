@@ -6,18 +6,18 @@
 <title>Claude Usage Meter</title>
 <style>
   :root {
-    --bg: #0d0d12;
-    --surface: #16161e;
-    --surface2: #1e1e2a;
-    --border: #2a2a3a;
-    --text: #e8e8f0;
-    --muted: #666688;
-    --opus-a: #a855f7;
-    --opus-b: #f59e0b;
-    --sonnet-a: #3b82f6;
-    --sonnet-b: #06b6d4;
-    --haiku-a: #10b981;
-    --haiku-b: #84cc16;
+    --bg:        #0d0d12;
+    --surface:   #16161e;
+    --surface2:  #1e1e2a;
+    --border:    #2a2a3a;
+    --text:      #e8e8f0;
+    --muted:     #666688;
+    --opus-a:    #a855f7;
+    --opus-b:    #f59e0b;
+    --sonnet-a:  #3b82f6;
+    --sonnet-b:  #06b6d4;
+    --haiku-a:   #10b981;
+    --haiku-b:   #84cc16;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -28,77 +28,115 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 48px 20px 64px;
+    padding: 48px 20px 80px;
   }
 
   /* ── header ── */
   .logo {
-    width: 40px; height: 40px;
+    width: 44px; height: 44px;
     background: linear-gradient(135deg, #a855f7, #3b82f6);
-    border-radius: 12px;
+    border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    margin-bottom: 16px;
+    font-size: 22px; margin-bottom: 18px;
   }
-  h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
-  .tagline { font-size: 0.82rem; color: var(--muted); margin-top: 4px; margin-bottom: 40px; }
+  h1 { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+  .tagline { font-size: 0.82rem; color: var(--muted); margin-top: 4px; margin-bottom: 44px; }
 
-  /* ── drop zone ── */
-  #dropzone {
-    width: 100%;
-    max-width: 560px;
-    border: 2px dashed var(--border);
+  /* ── API key input ── */
+  .key-section {
+    width: 100%; max-width: 520px;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 40px 24px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-    margin-bottom: 48px;
-    position: relative;
+    padding: 28px;
+    margin-bottom: 36px;
   }
-  #dropzone.drag-over {
-    border-color: #a855f7;
-    background: rgba(168,85,247,0.05);
+  .key-label {
+    font-size: 0.75rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 12px;
+    display: block;
   }
-  #dropzone input[type=file] {
-    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  .key-row {
+    display: flex; gap: 10px; align-items: center;
   }
-  .drop-icon { font-size: 2.4rem; margin-bottom: 12px; }
-  .drop-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 6px; }
-  .drop-sub { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
-  code {
+  .key-input {
+    flex: 1;
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 1px 6px;
-    font-size: 0.85em;
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-size: 0.85rem;
     font-family: "SF Mono", "Fira Code", monospace;
+    outline: none;
+    transition: border-color 0.2s;
   }
-
-  /* ── period tabs ── */
-  .period-tabs {
-    display: flex; gap: 8px; margin-bottom: 32px;
-  }
-  .tab {
-    padding: 6px 20px;
-    border-radius: 99px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    font-size: 0.82rem;
+  .key-input:focus { border-color: #a855f7; }
+  .key-input::placeholder { color: var(--muted); }
+  .btn-check {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #a855f7, #3b82f6);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    white-space: nowrap;
+    transition: opacity 0.2s;
   }
-  .tab.active { background: var(--border); color: var(--text); border-color: transparent; }
+  .btn-check:hover { opacity: 0.85; }
+  .btn-check:disabled { opacity: 0.4; cursor: not-allowed; }
+  .key-hint {
+    font-size: 0.72rem; color: var(--muted);
+    margin-top: 10px; line-height: 1.6;
+  }
+  .key-hint a { color: #a855f7; text-decoration: none; }
+  .key-hint a:hover { text-decoration: underline; }
+
+  /* save toggle */
+  .save-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 14px;
+  }
+  .toggle {
+    position: relative; width: 36px; height: 20px;
+    cursor: pointer;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; inset: 0;
+    background: var(--border);
+    border-radius: 99px;
+    transition: background 0.2s;
+  }
+  .slider::before {
+    content: '';
+    position: absolute;
+    width: 14px; height: 14px;
+    left: 3px; top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+  }
+  input:checked + .slider { background: #a855f7; }
+  input:checked + .slider::before { transform: translateX(16px); }
+  .save-label { font-size: 0.75rem; color: var(--muted); }
+
+  /* ── status / error ── */
+  #status {
+    font-size: 0.8rem; margin-bottom: 12px;
+    min-height: 20px; color: var(--muted);
+  }
+  #status.error { color: #ef4444; }
+  #status.ok    { color: #10b981; }
 
   /* ── cards ── */
   .cards {
-    display: flex;
-    gap: 24px;
-    flex-wrap: wrap;
+    display: flex; gap: 24px; flex-wrap: wrap;
     justify-content: center;
-    width: 100%;
-    max-width: 980px;
+    width: 100%; max-width: 980px;
     margin-bottom: 48px;
   }
   .card {
@@ -106,35 +144,29 @@
     border: 1px solid var(--border);
     border-radius: 20px;
     padding: 28px 24px 24px;
-    flex: 1 1 260px;
-    max-width: 295px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    position: relative;
-    overflow: hidden;
+    flex: 1 1 260px; max-width: 295px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 18px;
+    position: relative; overflow: hidden;
   }
   .card::before {
     content: '';
     position: absolute;
     top: -70px; left: 50%; transform: translateX(-50%);
     width: 220px; height: 220px;
-    border-radius: 50%;
-    opacity: 0.06;
-    pointer-events: none;
+    border-radius: 50%; opacity: 0.06; pointer-events: none;
   }
   .card.opus::before   { background: radial-gradient(circle, #a855f7, #f59e0b); }
   .card.sonnet::before { background: radial-gradient(circle, #3b82f6, #06b6d4); }
   .card.haiku::before  { background: radial-gradient(circle, #10b981, #84cc16); }
+  .card.loading { opacity: 0.4; }
 
   .model-label {
     font-size: 0.72rem; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--muted);
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
   }
 
-  /* circular gauge */
+  /* gauge */
   .gauge-wrap { position: relative; width: 172px; height: 172px; }
   .gauge-wrap svg { transform: rotate(-90deg); display: block; }
   .gauge-bg   { fill: none; stroke: var(--border); stroke-width: 10; }
@@ -146,7 +178,7 @@
     align-items: center; justify-content: center; gap: 3px;
   }
   .gauge-pct  { font-size: 1.9rem; font-weight: 700; line-height: 1; }
-  .gauge-rem  { font-size: 0.68rem; color: var(--muted); }
+  .gauge-sub  { font-size: 0.68rem; color: var(--muted); text-align: center; }
 
   .stats { width: 100%; display: flex; flex-direction: column; gap: 9px; }
   .stat-row {
@@ -156,290 +188,300 @@
   .stat-label { color: var(--muted); }
   .stat-val   { font-variant-numeric: tabular-nums; font-weight: 500; }
   .divider    { width: 100%; height: 1px; background: var(--border); }
-  .limit-note { font-size: 0.66rem; color: var(--muted); text-align: center; }
+  .reset-note {
+    font-size: 0.66rem; color: var(--muted);
+    text-align: center; line-height: 1.5;
+  }
 
-  /* color states */
   .ok     { color: #10b981 !important; }
   .warn   { color: #f59e0b !important; }
   .danger { color: #ef4444 !important; }
 
-  /* ── empty state ── */
-  #empty {
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.85rem;
-    display: none;
-    padding: 20px;
+  /* ── footer ── */
+  .footer {
+    font-size: 0.72rem; color: var(--muted);
+    text-align: center; line-height: 2;
   }
-
-  /* ── how-to ── */
-  .howto {
-    width: 100%; max-width: 560px;
-    background: var(--surface);
+  .footer a { color: #a855f7; text-decoration: none; }
+  .btn-refresh {
+    margin-top: 14px;
+    padding: 6px 22px;
+    border-radius: 99px;
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 24px;
+    background: transparent; color: var(--muted);
+    font-size: 0.78rem; cursor: pointer; transition: all 0.2s;
   }
-  .howto h2 { font-size: 0.85rem; font-weight: 600; margin-bottom: 14px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
-  .howto ol { padding-left: 20px; display: flex; flex-direction: column; gap: 10px; }
-  .howto li { font-size: 0.82rem; line-height: 1.6; color: var(--text); }
+  .btn-refresh:hover { color: var(--text); border-color: #555; }
+  #updated-at { font-size: 0.72rem; color: var(--muted); margin-bottom: 10px; }
 
-  /* ── updated-at ── */
-  #updated-at { font-size: 0.72rem; color: var(--muted); margin-bottom: 12px; }
+  code {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px; font-size: 0.85em;
+    font-family: "SF Mono", "Fira Code", monospace;
+  }
 </style>
 </head>
 <body>
 
 <div class="logo">⚡</div>
 <h1>Claude Usage Meter</h1>
-<p class="tagline">Opus / Sonnet / Haiku の使用量をリアルタイムで確認</p>
+<p class="tagline">Opus · Sonnet · Haiku の残りトークンをリアルタイム確認</p>
 
-<!-- drop zone -->
-<div id="dropzone">
-  <input type="file" id="file-input" multiple accept=".jsonl" webkitdirectory>
-  <div class="drop-icon">📂</div>
-  <div class="drop-title">セッションフォルダをドロップ</div>
-  <div class="drop-sub">
-    <code>~/.claude/projects</code> フォルダをここへ<br>
-    または .jsonl ファイルを複数選択
+<!-- API key input -->
+<div class="key-section">
+  <span class="key-label">Anthropic API Key</span>
+  <div class="key-row">
+    <input type="password" id="api-key" class="key-input"
+           placeholder="sk-ant-api03-…" autocomplete="off" spellcheck="false">
+    <button class="btn-check" id="btn-check" onclick="checkAll()">確認</button>
+  </div>
+  <p class="key-hint">
+    APIキーは <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a> で取得できます。<br>
+    キーはこのブラウザ内でのみ使用され、サーバーには保存されません。
+  </p>
+  <div class="save-row">
+    <label class="toggle">
+      <input type="checkbox" id="save-key" onchange="onSaveToggle()">
+      <span class="slider"></span>
+    </label>
+    <span class="save-label">このブラウザにキーを保存する</span>
   </div>
 </div>
 
-<!-- period tabs (hidden until data loaded) -->
-<div class="period-tabs" id="tabs" style="display:none">
-  <button class="tab active" onclick="setPeriod('window')">直近 5h</button>
-  <button class="tab" onclick="setPeriod('day')">直近 24h</button>
-  <button class="tab" onclick="setPeriod('all')">全期間</button>
-</div>
-
+<p id="status"></p>
 <p id="updated-at"></p>
-<div id="empty">データが見つかりませんでした。</div>
+
 <div class="cards" id="cards"></div>
 
-<!-- how-to -->
-<div class="howto" id="howto">
-  <h2>使い方</h2>
-  <ol>
-    <li>macOS の Finder で <code>~/.claude/projects</code> フォルダを開く<br>
-        <span style="color:var(--muted); font-size:0.78rem">Finder → メニューバー「移動」→「フォルダへ移動…」→ <code>~/.claude/projects</code></span>
-    </li>
-    <li>そのフォルダをこのページの上のエリアにドラッグ&amp;ドロップ</li>
-    <li>Opus / Sonnet / Haiku の残量がメーターで表示されます</li>
-  </ol>
+<div class="footer">
+  APIキーはブラウザ（localStorage）にのみ保存されます。<br>
+  ソースコード: <a href="https://github.com/3Daddy-AI/Claude-meter" target="_blank">github.com/3Daddy-AI/Claude-meter</a>
+  <br>
+  <button class="btn-refresh" id="btn-refresh" onclick="checkAll()" style="display:none">↻ 再確認</button>
 </div>
 
 <script>
 // ── 設定 ──────────────────────────────────────────────────────────────
-const WINDOW_HOURS = 5;
-const LIMITS = { opus: 900_000, sonnet: 2_000_000, haiku: 5_000_000 };
-const MODEL_INFO = {
-  opus:   { label:'Opus',   from:'#a855f7', to:'#f59e0b', id:'gO' },
-  sonnet: { label:'Sonnet', from:'#3b82f6', to:'#06b6d4', id:'gS' },
-  haiku:  { label:'Haiku',  from:'#10b981', to:'#84cc16', id:'gH' },
-};
+// Vercelデプロイ後は自動的に /api/probe を使用。ローカルテスト用に変更可。
+const PROBE_URL = "/api/probe";
+
+const MODELS = [
+  { key: "opus",   id: "claude-opus-4-6",             label: "Opus",   from: "#a855f7", to: "#f59e0b", gid: "gO" },
+  { key: "sonnet", id: "claude-sonnet-4-6",            label: "Sonnet", from: "#3b82f6", to: "#06b6d4", gid: "gS" },
+  { key: "haiku",  id: "claude-haiku-4-5-20251001",    label: "Haiku",  from: "#10b981", to: "#84cc16", gid: "gH" },
+];
 // ─────────────────────────────────────────────────────────────────────
 
-let currentPeriod = 'window';
-let currentData   = null;
-
-function classifyModel(m) {
-  m = m.toLowerCase();
-  if (m.includes('opus'))   return 'opus';
-  if (m.includes('sonnet')) return 'sonnet';
-  if (m.includes('haiku'))  return 'haiku';
-  return null;
-}
 function fmtN(n) {
-  if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
-  if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
+  n = Number(n);
+  if (isNaN(n)) return "—";
+  if (n >= 1e6) return (n/1e6).toFixed(1) + "M";
+  if (n >= 1e3) return (n/1e3).toFixed(1) + "K";
   return String(n);
 }
-function totalTok(u) {
-  return (u.input||0)+(u.output||0)+(u.cacheCreate||0)+(u.cacheRead||0);
+
+function colorCls(pct) {
+  if (pct >= 0.9) return "danger";
+  if (pct >= 0.7) return "warn";
+  return "ok";
 }
 
-async function parseFiles(files) {
-  const now = new Date();
-  const windowStart = new Date(now - WINDOW_HOURS*3600_000);
-  const dayStart    = new Date(now - 24*3600_000);
-
-  const mkEntry = () => ({input:0, output:0, cacheCreate:0, cacheRead:0, calls:0});
-  const totals = {
-    window: {opus:mkEntry(), sonnet:mkEntry(), haiku:mkEntry()},
-    day:    {opus:mkEntry(), sonnet:mkEntry(), haiku:mkEntry()},
-    all:    {opus:mkEntry(), sonnet:mkEntry(), haiku:mkEntry()},
-  };
-
-  for (const file of files) {
-    if (!file.name.endsWith('.jsonl')) continue;
-    const text = await file.text();
-    for (const line of text.split('\n')) {
-      if (!line.trim()) continue;
-      let obj;
-      try { obj = JSON.parse(line); } catch { continue; }
-      if (obj.type !== 'assistant') continue;
-      const msg   = obj.message || {};
-      const mkey  = classifyModel(msg.model || '');
-      if (!mkey) continue;
-      const usage = msg.usage || {};
-      const inp = usage.input_tokens || 0;
-      const out = usage.output_tokens || 0;
-      const cc  = usage.cache_creation_input_tokens || 0;
-      const cr  = usage.cache_read_input_tokens || 0;
-      if (inp+out+cc+cr === 0) continue;
-
-      let ts;
-      try { ts = new Date(obj.timestamp); } catch { ts = now; }
-
-      const add = (bucket) => {
-        bucket[mkey].input       += inp;
-        bucket[mkey].output      += out;
-        bucket[mkey].cacheCreate += cc;
-        bucket[mkey].cacheRead   += cr;
-        bucket[mkey].calls       += 1;
-      };
-      add(totals.all);
-      if (ts >= dayStart)    add(totals.day);
-      if (ts >= windowStart) add(totals.window);
-    }
-  }
-  return { totals, now: now.toISOString() };
+function fmtReset(iso) {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (isNaN(d)) return null;
+  const diff = Math.max(0, Math.round((d - Date.now()) / 1000));
+  if (diff < 60) return `${diff}秒後にリセット`;
+  if (diff < 3600) return `${Math.floor(diff/60)}分後にリセット`;
+  return `${Math.floor(diff/3600)}時間後にリセット`;
 }
 
-function buildSVG(pct, info) {
-  const R=76, CX=86, CY=86, circ=2*Math.PI*R;
-  const fill=circ*Math.min(pct,1), gap=circ-fill;
+function buildSVG(pct, m) {
+  const R=76, CX=86, CY=86, C=2*Math.PI*R;
+  const f = C * Math.min(Math.max(pct,0), 1);
   return `<svg width="172" height="172" viewBox="0 0 172 172">
     <defs>
-      <linearGradient id="${info.id}" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%"   stop-color="${info.from}"/>
-        <stop offset="100%" stop-color="${info.to}"/>
+      <linearGradient id="${m.gid}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="${m.from}"/>
+        <stop offset="100%" stop-color="${m.to}"/>
       </linearGradient>
     </defs>
     <circle class="gauge-bg"   cx="${CX}" cy="${CY}" r="${R}"/>
     <circle class="gauge-fill" cx="${CX}" cy="${CY}" r="${R}"
-      stroke="url(#${info.id})"
-      stroke-dasharray="${fill} ${gap}"
+      stroke="url(#${m.gid})"
+      stroke-dasharray="${f} ${C-f}"
       stroke-dashoffset="0"/>
   </svg>`;
 }
 
-function colorCls(pct) {
-  if (pct >= 0.9) return 'danger';
-  if (pct >= 0.7) return 'warn';
-  return 'ok';
+function buildCard(m, data) {
+  const rl = data?.rateLimits ?? {};
+  const tok = rl.tokens ?? {};
+  const limit     = Number(tok.limit)     || 0;
+  const remaining = Number(tok.remaining) || 0;
+  const used      = Math.max(limit - remaining, 0);
+  const pct       = limit > 0 ? used / limit : 0;
+  const resetTxt  = fmtReset(tok.reset);
+
+  const card = document.createElement("div");
+  card.className = `card ${m.key}`;
+  card.id = `card-${m.key}`;
+
+  // gauge
+  const gw = document.createElement("div");
+  gw.className = "gauge-wrap";
+  gw.innerHTML = buildSVG(pct, m);
+  const gc = document.createElement("div");
+  gc.className = "gauge-center";
+  if (limit > 0) {
+    gc.innerHTML = `
+      <span class="gauge-pct ${colorCls(pct)}">${Math.round(pct*100)}%</span>
+      <span class="gauge-sub">残り ${fmtN(remaining)}</span>`;
+  } else {
+    gc.innerHTML = `<span class="gauge-pct" style="font-size:1.1rem;color:var(--muted)">—</span>`;
+  }
+  gw.appendChild(gc);
+
+  card.innerHTML = `<div class="model-label">${m.label}</div>`;
+  card.appendChild(gw);
+  card.insertAdjacentHTML("beforeend", `
+    <div class="stats">
+      <div class="stat-row">
+        <span class="stat-label">上限（/分）</span>
+        <span class="stat-val">${fmtN(tok.limit)}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">使用済み</span>
+        <span class="stat-val">${fmtN(used)}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">残り</span>
+        <span class="stat-val ${colorCls(pct)}">${fmtN(remaining)}</span>
+      </div>
+      <div class="divider"></div>
+      <div class="stat-row">
+        <span class="stat-label">リクエスト残り</span>
+        <span class="stat-val">${fmtN(rl.requests?.remaining)} / ${fmtN(rl.requests?.limit)}</span>
+      </div>
+      ${resetTxt ? `<div class="reset-note">↺ ${resetTxt}</div>` : ""}
+    </div>`);
+  return card;
 }
 
-function renderCards(data, period) {
-  const container = document.getElementById('cards');
-  container.innerHTML = '';
-  const pd = data.totals[period];
-  const isW = (period === 'window');
+function buildSkeletonCard(m) {
+  const card = document.createElement("div");
+  card.className = `card ${m.key} loading`;
+  card.id = `card-${m.key}`;
+  const gw = document.createElement("div");
+  gw.className = "gauge-wrap";
+  gw.innerHTML = buildSVG(0, m);
+  const gc = document.createElement("div");
+  gc.className = "gauge-center";
+  gc.innerHTML = `<span class="gauge-pct" style="font-size:1rem;color:var(--muted)">…</span>`;
+  gw.appendChild(gc);
+  card.innerHTML = `<div class="model-label">${m.label}</div>`;
+  card.appendChild(gw);
+  return card;
+}
 
-  for (const [key, info] of Object.entries(MODEL_INFO)) {
-    const u     = pd[key];
-    const used  = totalTok(u);
-    const limit = LIMITS[key];
-    const pct   = isW ? Math.min(used/limit, 1) : 0;
-    const rem   = isW ? Math.max(limit - used, 0) : null;
+async function probeModel(apiKey, model) {
+  const res = await fetch(PROBE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ apiKey, model: model.id }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error ?? `HTTP ${res.status}`);
+  }
+  return res.json();
+}
 
-    const card = document.createElement('div');
-    card.className = `card ${key}`;
+async function checkAll() {
+  const apiKey = document.getElementById("api-key").value.trim();
+  if (!apiKey) {
+    setStatus("APIキーを入力してください", "error");
+    return;
+  }
+  if (!apiKey.startsWith("sk-ant-")) {
+    setStatus("有効なAnthropicのAPIキー（sk-ant-…）を入力してください", "error");
+    return;
+  }
 
-    // gauge
-    const gw = document.createElement('div');
-    gw.className = 'gauge-wrap';
-    gw.innerHTML = buildSVG(pct, info);
-    const gc = document.createElement('div');
-    gc.className = 'gauge-center';
-    if (isW) {
-      gc.innerHTML = `
-        <span class="gauge-pct ${colorCls(pct)}">${Math.round(pct*100)}%</span>
-        <span class="gauge-rem">残り ${fmtN(rem)}</span>`;
+  // skeleton cards
+  const container = document.getElementById("cards");
+  container.innerHTML = "";
+  MODELS.forEach(m => container.appendChild(buildSkeletonCard(m)));
+
+  document.getElementById("btn-check").disabled  = true;
+  document.getElementById("btn-refresh").style.display = "none";
+  setStatus("確認中…");
+
+  const results = await Promise.allSettled(
+    MODELS.map(m => probeModel(apiKey, m))
+  );
+
+  container.innerHTML = "";
+  let anyOk = false;
+  results.forEach((r, i) => {
+    const m = MODELS[i];
+    if (r.status === "fulfilled") {
+      container.appendChild(buildCard(m, r.value));
+      anyOk = true;
     } else {
-      gc.innerHTML = `
-        <span class="gauge-pct" style="font-size:1.5rem">${fmtN(used)}</span>
-        <span class="gauge-rem">tokens</span>`;
+      const card = buildCard(m, null);
+      card.classList.remove("loading");
+      // show error badge
+      card.querySelector(".gauge-center").innerHTML =
+        `<span style="font-size:0.72rem;color:#ef4444;text-align:center;padding:0 8px">${r.reason?.message ?? "エラー"}</span>`;
+      container.appendChild(card);
     }
-    gw.appendChild(gc);
+  });
 
-    card.innerHTML = `<div class="model-label">${info.label}</div>`;
-    card.appendChild(gw);
-    card.insertAdjacentHTML('beforeend', `
-      <div class="stats">
-        <div class="stat-row"><span class="stat-label">入力</span><span class="stat-val">${fmtN(u.input)}</span></div>
-        <div class="stat-row"><span class="stat-label">出力</span><span class="stat-val">${fmtN(u.output)}</span></div>
-        <div class="stat-row"><span class="stat-label">キャッシュ作成</span><span class="stat-val">${fmtN(u.cacheCreate)}</span></div>
-        <div class="stat-row"><span class="stat-label">キャッシュ読込</span><span class="stat-val">${fmtN(u.cacheRead)}</span></div>
-        <div class="divider"></div>
-        <div class="stat-row"><span class="stat-label">呼び出し</span><span class="stat-val">${u.calls.toLocaleString()} 回</span></div>
-        ${isW ? `<div class="limit-note">上限 ${fmtN(limit)} tokens / ${WINDOW_HOURS}h</div>` : ''}
-      </div>`);
-    container.appendChild(card);
+  document.getElementById("btn-check").disabled = false;
+  document.getElementById("btn-refresh").style.display = "inline-block";
+
+  if (anyOk) {
+    setStatus("✓ 取得完了", "ok");
+    document.getElementById("updated-at").textContent =
+      `最終更新: ${new Date().toLocaleString("ja-JP")}`;
+  } else {
+    setStatus("APIキーが無効か、アクセスできませんでした", "error");
   }
 }
 
-function setPeriod(p) {
-  currentPeriod = p;
-  document.querySelectorAll('.tab').forEach((t,i) =>
-    t.classList.toggle('active', ['window','day','all'][i] === p));
-  if (currentData) renderCards(currentData, p);
+function setStatus(msg, cls = "") {
+  const el = document.getElementById("status");
+  el.textContent = msg;
+  el.className = cls;
 }
 
-async function loadFiles(files) {
-  if (!files.length) return;
-  document.getElementById('howto').style.display = 'none';
-  document.getElementById('dropzone').style.display = 'none';
-
-  const data = await parseFiles(files);
-  currentData = data;
-
-  const hasData = Object.values(data.totals.all).some(v => v.calls > 0);
-  document.getElementById('empty').style.display    = hasData ? 'none' : 'block';
-  document.getElementById('tabs').style.display     = hasData ? 'flex'  : 'none';
-  document.getElementById('updated-at').textContent =
-    hasData ? `読み込み: ${new Date(data.now).toLocaleString('ja-JP')}` : '';
-
-  if (hasData) renderCards(data, currentPeriod);
-}
-
-// drag & drop
-const dz = document.getElementById('dropzone');
-dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('drag-over'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
-dz.addEventListener('drop', e => {
-  e.preventDefault();
-  dz.classList.remove('drag-over');
-  const items = e.dataTransfer.items;
-  const files = [];
-  const promises = [];
-  for (const item of items) {
-    const entry = item.webkitGetAsEntry?.();
-    if (entry) promises.push(traverseEntry(entry, files));
+function onSaveToggle() {
+  const save = document.getElementById("save-key").checked;
+  const key  = document.getElementById("api-key").value.trim();
+  if (save && key) {
+    localStorage.setItem("claude_meter_key", key);
+  } else {
+    localStorage.removeItem("claude_meter_key");
   }
-  Promise.all(promises).then(() => loadFiles(files));
+}
+
+// persist on input change if toggle is on
+document.getElementById("api-key").addEventListener("input", () => {
+  if (document.getElementById("save-key").checked) {
+    onSaveToggle();
+  }
 });
 
-function traverseEntry(entry, files) {
-  if (entry.isFile) {
-    return new Promise(res => entry.file(f => { files.push(f); res(); }));
+// restore saved key on load
+window.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("claude_meter_key");
+  if (saved) {
+    document.getElementById("api-key").value = saved;
+    document.getElementById("save-key").checked = true;
   }
-  if (entry.isDirectory) {
-    const reader = entry.createReader();
-    return new Promise(res => {
-      const readAll = () => reader.readEntries(entries => {
-        if (!entries.length) return res();
-        Promise.all(entries.map(e => traverseEntry(e, files))).then(readAll);
-      });
-      readAll();
-    });
-  }
-  return Promise.resolve();
-}
-
-// file input
-document.getElementById('file-input').addEventListener('change', e => {
-  loadFiles(Array.from(e.target.files));
 });
 </script>
 </body>
