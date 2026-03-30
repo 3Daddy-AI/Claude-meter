@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Claude Usage Meter",
+  "version": "1.0.0",
+  "description": "Opus / Sonnet / Haiku の残り使用量をメーター表示",
+  "permissions": ["storage"],
+  "host_permissions": ["https://claude.ai/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Claude Usage Meter"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://claude.ai/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["injected.js"],
+      "matches": ["https://claude.ai/*"]
+    }
+  ]
+}

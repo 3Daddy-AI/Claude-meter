@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Claude Usage Meter</title>
+<style>
+  :root {
+    --bg:      #0d0d12;
+    --surface: #16161e;
+    --border:  #2a2a3a;
+    --text:    #e8e8f0;
+    --muted:   #666688;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    width: 340px;
+    padding: 20px 16px 24px;
+  }
+
+  /* header */
+  .header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 18px;
+  }
+  .logo {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #a855f7, #3b82f6);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .header h1  { font-size: 1rem; font-weight: 700; }
+  .header sub { font-size: 0.68rem; color: var(--muted); display: block; }
+
+  /* no-data state */
+  #no-data {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  #no-data a { color: #a855f7; text-decoration: none; }
+  #no-data a:hover { text-decoration: underline; }
+
+  /* meter rows */
+  .meters { display: flex; flex-direction: column; gap: 10px; }
+
+  .meter-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+  }
+  .meter-top {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 8px;
+  }
+  .model-name {
+    font-size: 0.75rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .model-count {
+    font-size: 0.75rem; font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .model-count span { font-weight: 600; }
+
+  /* progress bar */
+  .bar-bg {
+    height: 8px; border-radius: 99px;
+    background: var(--border); overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 99px;
+    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  }
+  .bar-fill.opus   { background: linear-gradient(90deg, #a855f7, #f59e0b); }
+  .bar-fill.sonnet { background: linear-gradient(90deg, #3b82f6, #06b6d4); }
+  .bar-fill.haiku  { background: linear-gradient(90deg, #10b981, #84cc16); }
+
+  .reset-time {
+    font-size: 0.66rem; color: var(--muted);
+    margin-top: 5px; text-align: right;
+  }
+
+  /* footer */
+  .footer {
+    margin-top: 14px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .updated { font-size: 0.66rem; color: var(--muted); }
+  .btn-refresh {
+    font-size: 0.72rem; color: var(--muted);
+    background: none; border: 1px solid var(--border);
+    border-radius: 99px; padding: 3px 12px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-refresh:hover { color: var(--text); border-color: #555; }
+
+  .ok     { color: #10b981 !important; }
+  .warn   { color: #f59e0b !important; }
+  .danger { color: #ef4444 !important; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">⚡</div>
+  <div>
+    <h1>Claude Usage Meter</h1>
+    <sub id="plan-label">claude.ai</sub>
+  </div>
+</div>
+
+<div id="no-data">
+  まだデータがありません。<br>
+  <a href="https://claude.ai" target="_blank">claude.ai</a> を開いてチャットすると<br>
+  自動的に使用量を取得します。
+</div>
+
+<div class="meters" id="meters" style="display:none"></div>
+
+<div class="footer">
+  <span class="updated" id="updated-at"></span>
+  <button class="btn-refresh" onclick="load()">↻</button>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
